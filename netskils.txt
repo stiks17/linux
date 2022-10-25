@@ -247,8 +247,71 @@ YUM ( Yellowdog Updater Modified ) - это пакетный менеджер с открытым исходным к
 
 
 
-	
 
+
+*********************************************************************
+*********************************************************************
+**********************ћежсетевой экран************************
+*********************************************************************
+*********************************************************************
+в разделе сетевые настройки показанна настройка сети через конфигурационные файлы. 
+“еперь настроим еще  три септевых подключени€ через NETWORK MANAGER
+
+информаци€ про сетевые адаптеры и др. можно посмотреть командой
+	ifconfig
+	*********
+
+ntgthm посмотрим какие интерфейсы видит network nanager
+	sudo nmcli d
+	****************
+увидим примерно такой ответ:
+DEVICE   TYPE      STATE      CONNECTION
+enp0s3   ethernet  connected  enp0s3
+enp0s10  ethernet  connected  ethernet-enp0s10
+enp0s8   ethernet  connected  ethernet-enp0s8
+enp0s9   ethernet  connected   
+lo       loopback  unmanaged  --
+на примере enp0s9 мы видим что сетева€ карточка есть а подключение на ней отсутствует. Ќа всех остольных подключение настроено и имеет соответствующее название(например сетева€ карточка enp0s10 имеет название подключени€ ethernet-enp0s10)
+
+теперь настроим новые подключени€ к сетевым картам которые увидели командой sudo nmcli d. 
+	sudo nmcli с add type ethernet con-name ethernet-enp0s9 ifname enp0s9 ip4 192.168.250.1/24
+	*********************************************************************************************************************
+--с add type ethernet --добавить ethernet-соединение с именем ethernet-enp0s9 на сетевую карточку(интепфейс) ifname  с именем enp0s9 и присвоить ip адресс ip4  192.168.250.1/24 с маской /24(255.255.255.0).
+
+теперь подключим соединение
+	sudo nmcli device connect enp0s9
+	*****************************************
+
+а что бы отключить соединение
+	sudo nmcli device disconnect enp0s9
+	********************************************
+
+более короткие варианты
+ 	sudo nmcli device c enp0s9
+	*********************************
+	udo nmcli device d enp0s9
+	*********************************
+
+чтобы посмотреть состо€ние фаервола нужно ввевти команду
+	sudo iptables -L -v -n
+	**************************
+
+чтобы очистить все правила(пропускать все, после перезагрузки восстановитс€) нибираем
+	sudo iptables -F	
+	*******************
+должны увидеть примерно такое
+Chain INPUT (policy ACCEPT 9 packets, 724 bytes)
+ pkts bytes target     prot opt in     out     source               destination 
+
+Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               destination 
+
+Chain OUTPUT (policy ACCEPT 5 packets, 644 bytes)
+ pkts bytes target     prot opt in     out     source               destination 
+
+установить утилиту дл€ iptables
+	sudo yum install iptables-servises
+	*****************************************
 
 
 
